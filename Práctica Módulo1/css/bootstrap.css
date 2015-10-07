@@ -6798,3 +6798,17 @@ button.close {
   }
 }
 /*# sourceMappingURL=bootstrap.css.map */
+
+
+
+#registroIndex {
+    background-color:seagreen;
+    position:absolute;
+    left:40%;
+    top:10%;
+    min-width:100px;
+    min-height:100px;
+
+    margin-left:-10px; /* -1/2 width */
+    margin-top:-10px; /* -1/2 height */
+}
