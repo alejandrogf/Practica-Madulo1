@@ -1,8 +1,7 @@
-﻿
-document.getElementById("btnAccederIndex").addEventListener("click", login);
+﻿document.getElementById("btnAccederIndex").addEventListener("click", login);
 
 if (localStorage.getItem("nombreIndex")) {
-    location.replace("registroClase.html");
+    location.replace("conferencias.html");
 }
 
 function login() {
@@ -12,17 +11,12 @@ function login() {
         return;
     }
     localStorage.setItem("nombreIndex", $("#txtNombreIndex").val());
-    location.replace("registroClase.html");
-
-}
+    location.replace("conferencias.html");
+    }
 
 $(document).ready(function () {
-
     greet();
-
 });
-
-
 
 function greet() {
     var name = localStorage.getItem("nombreIndex");
