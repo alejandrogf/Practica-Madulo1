@@ -1,8 +1,8 @@
 ﻿document.getElementById("btnAccederIndex").addEventListener("click", login);
 
-if (localStorage.getItem("nombreIndex")) {
-    location.replace("conferencias.html");
-}
+//if (localStorage.getItem("nombreIndex")) {
+//    location.replace("conferencias.html");
+//}
 
 function login() {
     if (document.getElementById("txtNombreIndex").value == "") {
@@ -12,7 +12,7 @@ function login() {
     }
     localStorage.setItem("nombreIndex", $("#txtNombreIndex").val());
     location.replace("conferencias.html");
-    }
+};
 
 $(document).ready(function () {
     greet();
