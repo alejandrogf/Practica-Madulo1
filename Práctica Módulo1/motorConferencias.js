@@ -1,4 +1,9 @@
-﻿if (!localStorage.getItem("nombreIndex")) {
+﻿var tablasCreadas = undefined;
+
+var url = "https://alumnoscurso.azure-mobile.net/Tables/PracticaHMTL5_09/";
+var modificando = undefined;
+
+if (!localStorage.getItem("nombreIndex")) {
     location.replace("index.html");
 }
 
@@ -67,64 +72,229 @@ function mostrarMapa() {
     ctx.fillStyle = "#5673D4";//BUTACAS SECCION 2
     ctx.fillRect(228, 100, 130, 270);
     ctx.fillStyle = "#890111";//BUTACAS SECCION 3
-    ctx.fillRect(368, 100, 150, 270);
+    ctx.fillRect(368, 100, 130, 270);
 };
 //FIN SCRIPT MAPA SALA CONFERENCIAS
 
 //SCRIPT ELEGIR CONFERENCIAS
 function elegirConferencias() {
-
-    crearTabla();
-
-
+    if (!tablasCreadas) {
+        crearTabla();
+    }
+//    $(function () {
+//        $("#sortable1, #sortable2").sortable({
+//            connectWith: ".connectedSortable"
+//        }).disableSelection();
+//    });
 };
 
 
 function crearTabla() {
-    var tablaDisp = document.createElement("table");
-    tablaDisp.setAttribute("border", "1");
-    for (var i = 0; i < 5; i++) {
-        var fila = document.createElement("tr");
-        fila.setAttribute("style", "color:red;");
-        var c1 = document.createElement("td");
-        var t1 = document.createTextNode("Fila " + i + " col 1");
-        c1.appendChild(t1);
+    //Lista conferencias disponibles.
+    //var tituloDisp = document.createElement("h3");
+    //var tituloDispTxt = document.createTextNode("Conferencias Disponibles");
+    //tituloDisp.appendChild(tituloDispTxt);
+    //document.getElementById("tituloDisponibles").appendChild(tituloDisp);
 
-        var c2 = document.createElement("td");
-        var t2 = document.createTextNode("Fila " + i + " col 2");
-        c2.appendChild(t2);
 
-        var c3 = document.createElement("td");
-        var t3 = document.createTextNode("Fila " + i + " col 3");
-        c3.appendChild(t3);
-        c3.setAttribute("style", "color:verde");
-        fila.appendChild(c1);
-        fila.appendChild(c2);
-        fila.appendChild(c3);
-
-        tablaDisp.appendChild(fila);
+    var listaDisp = document.createElement("ul");
+    //listaDisp.setAttribute("id", "sortable1");
+    //listaDisp.setAttribute("class", "connectedSortable");
+    listaDisp.setAttribute("id", "listaDisp");
+    listaDisp.setAttribute("ondrop", "drop(event)");
+    listaDisp.setAttribute("ondragover", "allowDrop(event)");
+    
+    for (var i = 0; i < 7; i++) {
+        var itemLista = document.createElement("li");
+        itemLista.setAttribute("draggable", "true");
+        itemLista.setAttribute("ondragstart", "drag(event)");
+        itemLista.setAttribute("id", i);
+        var itemListaTxt = document.createTextNode("Conferencia " + i);
+        itemLista.appendChild(itemListaTxt);
+        listaDisp.appendChild(itemLista);
     }
+    document.getElementById("tablaDisponibles").appendChild(listaDisp);
 
-    document.body.appendChild(tablaDisp);
+    //Lista conferencias elegidas.
+    var listaSelec = document.createElement("ul");
+    //listaSelec.setAttribute("id", "sortable2");
+    //listaSelec.setAttribute("class", "connectedSortable");
+    listaSelec.setAttribute("id", "listaSelec");
+    listaSelec.setAttribute("ondrop", "drop(event)");
+    listaSelec.setAttribute("ondragover", "allowDrop(event)");
+    document.getElementById("tablaElegidas").appendChild(listaSelec);
 
+    tablasCreadas = true;
 }
 
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+    //var listaDestino = ev.target.id;
+    var listaDestino = ev.target.id;
+    if (ev.target.localName != "ul") {
+        listaDestino = document.getElementById(ev.target.id).parentElement.id;
+    }
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    //ev.target.appendChild(document.getElementById(data));
+
+    document.getElementById(listaDestino)
+        .appendChild(document.getElementById(data));
+    var listaParaOrdenar = "#" + listaDestino + " li";
+
+    $(listaParaOrdenar).sort(function (a, b) {
+        return parseInt(a.id) - parseInt(b.id);
+    }).each(function () {
+        var elem = $(this);
+        elem.remove();
+        $(elem).appendTo("#"+listaDestino);
+    });
 
 
-
-
-
-
-
-
-
+}
 
 //FIN SCRIPT ELEGIR CONFERENCIAS
 
 //SCRIPT REGISTRAR ASISTENTES
-function registrarAsistentes() {
-    
+function obtenerObjeto() {
+    var objeto = {
+        nombre: document.getElementById("txtNombre").value,
+        apellidos: document.getElementById("txtApellidos").value,
+        cargo: document.getElementById("txtCargo").value
+    };
+
+    return objeto;
 };
+function crearTablaAsist(data) {
+
+    var salida = "<table>";
+
+    salida += "<tr>";
+    salida += "<th>" + "Nombre" + "</th>";
+    salida += "<th>" + "Apellidos" + "</th>";
+    salida += "<th>" + "Cargo en la empresa" + "</th>" + "</tr>";
+
+    for (var i = 0; i < data.length; i++) {
+        salida += "<tr>";
+        salida += "<td>" + data[i].nombre + "</td>";
+        salida += "<td>" + data[i].apellidos + "</td>";
+        salida += "<td>" + data[i].cargo + "</td>";
+        salida += "<td><button type='button' onclick='borrar(\"" + data[i].id +"\")'>Borrar</button></td>";   
+        salida += "<td><button type='button' onclick='cargarModificacion(\"" + data[i].id + "\")'>Modificar</button></td>";
+        salida += "</tr>";
+
+
+    }
+    salida += "</table>";
+
+    //Se inserta la tabla creada en la capa del html
+    document.getElementById("tablaAsist").innerHTML = salida;
+};
+
+function borrar(id) {
+    var ajax = new XMLHttpRequest();
+    ajax.open("delete", url + "/" + id);
+    ajax.onreadystatechange = function () {
+        if (ajax.readyState == 4) {
+            if (ajax.status >= 200 && ajax.status < 300) {
+                actualizar();
+            }
+            else {
+                alert("Error!!!!");
+            }
+        }
+    }
+    ajax.send(null);
+}
+
+function cargarModificacion(id) {
+    var ajax = new XMLHttpRequest();
+    ajax.open("get", url + "/" + id);
+    ajax.onreadystatechange = function () {
+        if (ajax.readyState == 4) {
+            if (ajax.status >= 200 && ajax.status < 300) {
+                var data = JSON.parse(ajax.responseText);
+                document.getElementById("txtNombre").value = data.nombre;
+                document.getElementById("txtApellidos").value = data.apellidos;
+                document.getElementById("txtCargo").value = data.cargo;
+                modificando = data.id;
+            }
+            else {
+                alert("Error!!!!");
+            }
+        }
+    }
+    ajax.send(null);
+}
+
+function ejecutarModificacion() {
+    var ajax = new XMLHttpRequest();
+    ajax.open("PATCH", url + "/" + modificando);
+    ajax.setRequestHeader("Content-Type", "application/json");
+    ajax.onreadystatechange = function () {
+        if (ajax.readyState == 4) {
+            if (ajax.status >= 200 && ajax.status < 300) {
+                actualizar();
+            }
+            else {
+                alert("Error!!!!");
+            }
+        }
+    }
+    var data = obtenerObjeto();
+    data.id = modificando;
+    ajax.send(JSON.stringify(data));
+
+    document.getElementById("txtNombre").value = "";
+    document.getElementById("txtApellidos").value = "";
+    document.getElementById("txtCargo").value = "";
+}
+
+function actualizar() {
+    modificando = undefined;
+    var ajax = new XMLHttpRequest();
+    ajax.open("get", url);
+    ajax.onreadystatechange = function () {
+        if (ajax.readyState == 4) {
+            if (ajax.status >= 200 && ajax.status < 300) {
+                var data = JSON.parse(ajax.responseText);
+                crearTablaAsist(data);
+            }
+            else {
+                alert("Error!!!!");
+            }
+        }
+    }
+    ajax.send(null);
+}
+
+function insertar() {
+    var ajax = new XMLHttpRequest();
+    ajax.open("post", url);
+    ajax.setRequestHeader("Content-Type", "application/json");
+    ajax.onreadystatechange = function () {
+        if (ajax.readyState == 4) {
+            if (ajax.status >= 200 && ajax.status < 300) {
+                actualizar();
+            }
+            else {
+                alert("Error!!!!");
+            }
+        }
+    }
+    ajax.send(JSON.stringify(obtenerObjeto()));
+    document.getElementById("txtNombre").value = "";
+    document.getElementById("txtApellidos").value = "";
+    document.getElementById("txtCargo").value = "";
+}
+
 //FIN SCRIPT REGISTRAR ASISTENTES
 
 $(document).ready(function() {
@@ -145,5 +315,12 @@ $(document).ready(function() {
 document.getElementById("btnDonde").addEventListener("click", getLocation);
 document.getElementById("btnMapa").addEventListener("click", mostrarMapa);
 document.getElementById("btnConferencias").addEventListener("click", elegirConferencias);
-document.getElementById("btnAsistentes").addEventListener("click", registrarAsistentes);
+document.getElementById("btnAsistentes").addEventListener("click", actualizar);
 
+document.getElementById("btnAct").addEventListener("click", actualizar);
+document.getElementById("btnGuardar").addEventListener("click",function () {
+    if (modificando != undefined)
+        ejecutarModificacion();
+    else
+        insertar();
+});

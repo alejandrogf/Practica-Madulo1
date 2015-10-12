@@ -6840,3 +6840,92 @@ button.close {
     width: 25%;
 }
 
+ul
+{
+list-style-type: none;
+}
+
+#listaSelec, #listaDisp {
+    border: 1px solid #eee;
+    width: 142px;
+    min-height: 20px;
+    list-style-type: none;
+    margin: 0;
+    padding: 5px 0 0 0;
+    float: left;
+    margin-right: 10px;
+    background-color: silver;
+}
+#listaDisp li {
+    margin: 0 5px 5px 5px;
+    border: 1px solid #eee;
+    background-color: lightblue;
+    padding: 5px;
+    font-size: 1.2em;
+    width: 120px;
+}
+
+#listaSelec li {
+    margin: 0 5px 5px 5px;
+    border: 1px solid #eee;
+    background-color: lightgoldenrodyellow;
+    padding: 5px;
+    font-size: 1.2em;
+    width: 120px;
+}
+
+.conferencias {
+      display: inline;
+      float: left;
+      min-width: 250px;
+      margin: 50px 50px 50px 150px;
+}
+
+#gestion{
+    background-color:lightblue;
+    display: inline;
+    float: left;
+    min-height: 20px;
+    /*width: 200px;*/
+    border: 1px solid black;
+    /*line-height: 200px;*/
+    text-align: center;
+        padding: 5px 25px 25px 25px;
+        margin: 5px 25px 25px 25px;
+}
+
+#listado {
+    display: inline;
+    float: left;
+    background-color: seagreen;
+    min-height: 20px;
+    /*width: 200px;*/
+    border: 1px solid black;
+    /*line-height: 200px;*/
+    text-align: center;
+    padding: 25px 25px 25px 25px;
+    margin: 5px 25px 25px 25px;
+}
+
+#refrescar{
+    text-align: center;
+}
+#btnAct {
+    margin: 10px 0 0 0;
+}
+#tablaAsist {
+    border: 1px solid #eee;
+    min-width: 142px;
+    min-height: 20px;
+    list-style-type: none;
+    margin: 0;
+    padding: 5px;
+    float: left;
+    margin-right: 10px;
+    background-color: silver;
+}
+
+#tablaAsist td, #tablaAsist th {
+    padding: 5px;
+    border: 1px solid black;
+    }
